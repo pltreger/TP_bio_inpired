@@ -32,6 +32,8 @@ class Buffer:
         rewards = []
         done = []
 
+        listIndex = []
+
         if self.init == 0:
             init = self.index
         else:
@@ -39,6 +41,9 @@ class Buffer:
 
         for k in sizeBatch:
             index = randint(init)
+            while index in listIndex:
+                index = randint(init)
+            listIndex.append(index)
             states.append(self.statess[index])
             actions.append(self.actions[index])
             nextstates.append(self.nextstates[index])
