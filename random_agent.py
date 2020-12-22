@@ -5,6 +5,9 @@ from Buffer import Buffer
 import gym
 from gym import wrappers, logger
 
+from Neural_Network import Neural_Network
+
+
 class RandomAgent(object):
     """The world's simplest agent!"""
     def __init__(self, action_space):
@@ -15,7 +18,7 @@ class RandomAgent(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=None)
-    parser.add_argument('env_id', nargs='?', default='CartPole-v0', help='Select the environment to run')
+    parser.add_argument('env_id', nargs='?', default='CartPole-v1', help='Select the environment to run')
     args = parser.parse_args()
 
     # You can set the level to logger.DEBUG or logger.WARN if you
@@ -36,14 +39,23 @@ if __name__ == '__main__':
     episode_count = 100
     reward = 0
     done = False
+    sizeBuffer = 1000
+
+    neural_network = Neural_Network(env.action_space.n, sizeBuffer)
+
 
     for i in range(episode_count):
         ob = env.reset()
         nbInteraction = 0
         totalReward = 0
         while True:
-            action = agent.act(ob, reward, done)
-            ob, reward, done, _ = env.step(action)
+            #action = agent.act(ob, reward, done)
+            action = neural_network.get_action(ob,strategie="aleatoire")
+            ob_next, reward, done, _ = env.step(action)
+            neural_network.add_memoire(ob, action, ob_next, reward, done)
+
+            ob = ob_next
+
             nbInteraction = nbInteraction + 1
             totalReward = totalReward + reward
             if done:
