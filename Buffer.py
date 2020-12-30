@@ -32,9 +32,9 @@ class Buffer:
             self.index = 0
 
     def get_minibatch(self, sizeBatch):
-        states = numpy.zeros(sizeBatch)
+        states = numpy.zeros((sizeBatch, 4))
         actions = numpy.zeros(sizeBatch)
-        nextstates = numpy.zeros(sizeBatch)
+        nextstates = numpy.zeros((sizeBatch, 4))
         rewards = numpy.zeros(sizeBatch)
         done = numpy.zeros(sizeBatch)
 
@@ -47,11 +47,12 @@ class Buffer:
         else:
             init = self.sizeBuffer
 
-        for k in sizeBatch:
-            index = randint(init)
+
+        for k in range(sizeBatch):
+            index = randint(0,init)
             #On fait en sorte qu'il n'y ait pas la même donnée dans ke mini batch
             while index in listIndex:
-                index = randint(init)
+                index = randint(0,init)
             listIndex.append(index)
 
             #On rempli le minibatch

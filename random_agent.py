@@ -1,6 +1,7 @@
 import argparse
 import sys
 from Buffer import Buffer
+import matplotlib.pyplot as plt
 
 import gym
 from gym import wrappers, logger
@@ -15,6 +16,17 @@ class RandomAgent(object):
 
     def act(self, observation, reward, done):
         return self.action_space.sample()
+
+
+def afficher_graphique(reward, etapes):
+    plt.title("Apprentissage")
+    plt.plot(etapes, reward)
+    plt.title("Reward")
+    plt.xlabel('Episode')
+    plt.ylabel('Steps')
+    plt.show()
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=None)
@@ -39,18 +51,25 @@ if __name__ == '__main__':
     episode_count = 100
     reward = 0
     done = False
-    sizeBuffer = 1000
+    sizeBuffer = 1000000
+    sizeBatch = 20
+    gamma = 0.5
 
     neural_network = Neural_Network(env.action_space.n, sizeBuffer)
 
+    rewards = []
+    etapes = []
 
     for i in range(episode_count):
         ob = env.reset()
         nbInteraction = 0
         totalReward = 0
         while True:
-            #action = agent.act(ob, reward, done)
-            action = neural_network.get_action(ob,strategie="aleatoire")
+            """""choix de la stratégie :
+            strategie = "aleatoire"
+            strategie = "e-greedy", epsilon =
+            strategie = "boltzmann", tau ="""""
+            action = neural_network.get_action(ob,strategie="e-greedy",epsilon=0.9)
             ob_next, reward, done, _ = env.step(action)
             neural_network.add_memoire(ob, action, ob_next, reward, done)
 
@@ -58,12 +77,22 @@ if __name__ == '__main__':
 
             nbInteraction = nbInteraction + 1
             totalReward = totalReward + reward
+
+            neural_network.learn(sizeBatch, gamma)
+
             if done:
                 break
             # Note there's no env.render() here. But the environment still can open window and
             # render if asked by env.monitor: it calls env.render('rgb_array') to record video.
             # Video is not recorded every episode, see capped_cubic_video_schedule for details.
+
         print("Trace : episode : " + str(i) + " ; nb interactions : " + str(nbInteraction) + " ; recompenses : " +str(totalReward))
+        rewards.append(totalReward)
+        etapes.append(i)
+
+
     # Close the env and write monitor result info to disk
     env.close()
+    afficher_graphique(rewards,etapes)
+
 

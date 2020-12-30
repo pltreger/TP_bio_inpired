@@ -8,8 +8,8 @@ class Net(nn.Module):
         super(Net, self).__init__()
         # prend en entrée un état
         # sa taille de sortie est de même taille que le nombre d’actions possibles
-        self.fc1 = nn.Linear(4, 50)
-        self.fc2 = nn.Linear(50, nb_actions)
+        self.fc1 = nn.Linear(4, 100)
+        self.fc2 = nn.Linear(100, nb_actions)
 
 
     def forward(self, x):
