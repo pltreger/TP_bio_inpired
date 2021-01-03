@@ -75,7 +75,7 @@ class Neural_Network:
         reward_batch = torch.from_numpy(rewards)
         done_batch = torch.from_numpy(done)
 
-        Q_next = self.model_anticipation(nextstate_batch.float()).detach()
+        Q_next = self.model_apprentissage(nextstate_batch.float()).detach()
 
         # application de l'équation de Bellman : à r si l'épisode se termine, à r + gamma*max(Q) sinon
         Q_apprentissage = torch.stack(tuple(reward_batch[i] if done_batch[i]
@@ -91,14 +91,13 @@ class Neural_Network:
         perte.backward()
         self.optimizer.step()
 
-       
 
         #Mise à jour des poids
         dict_anticipation = self.model_anticipation.state_dict()
         dict_apprentissate = self.model_apprentissage.state_dict()
         for weights in dict_apprentissate:
-            dict_anticipation[weights] = (1 - 0.01) * dict_anticipation[weights] + 0.01 * dict_apprentissate[weights]
-            self.model_anticipation.load_state_dict(dict_anticipation)
+            dict_apprentissate[weights] = (1 - 0.01) * dict_apprentissate[weights] + 0.01 * dict_anticipation[weights]
+            self.model_apprentissage.load_state_dict(dict_apprentissate)
 
     "sauvegarde l'expérience en mémoire"
     def add_memoire(self, ob, action, ob_next, reward, done):
