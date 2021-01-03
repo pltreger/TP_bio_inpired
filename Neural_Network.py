@@ -78,7 +78,7 @@ class Neural_Network:
         Q_next = self.model_anticipation(nextstate_batch.float()).detach()
 
         # application de l'équation de Bellman : à r si l'épisode se termine, à r + gamma*max(Q) sinon
-        Q_apprentissage = torch.stack(tuple(reward_batch[i] if i == sizeBatch - 1
+        Q_apprentissage = torch.stack(tuple(reward_batch[i] if done_batch[i]
                                             else reward_batch[i] + gamma * torch.max(Q_next[i])
                                             for i in range(sizeBatch)))
 
@@ -91,6 +91,7 @@ class Neural_Network:
         perte.backward()
         self.optimizer.step()
 
+       
 
         #Mise à jour des poids
         dict_anticipation = self.model_anticipation.state_dict()

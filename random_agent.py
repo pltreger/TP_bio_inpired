@@ -53,7 +53,7 @@ if __name__ == '__main__':
     done = False
     sizeBuffer = 1000000
     sizeBatch = 100
-    gamma = 0.99
+    gamma = 0.9
 
     neural_network = Neural_Network(env.action_space.n, sizeBuffer)
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             strategie = "aleatoire"
             strategie = "e-greedy", epsilon =
             strategie = "boltzmann", tau ="""""
-            action = neural_network.get_action(ob,strategie="e-greedy",epsilon=0.5)
+            action = neural_network.get_action(ob,strategie="e-greedy",epsilon=0.1)
             ob_next, reward, done, _ = env.step(action)
             neural_network.add_memoire(ob, action, ob_next, reward, done)
 
